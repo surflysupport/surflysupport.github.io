@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Recording Comfirmation</title>
+</head>
+<body>
+    <h1>Check new Session recording is available</h1>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aws-sdk/2.1071/aws-sdk.min.js"></script>
+    <script>
+        // Configure AWS credentials
+        AWS.config.update({
+            accessKeyId: 'AKIAISPJXHD5QGAFMSRA',
+            secretAccessKey: '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'
+        });
+
+        // Initialize the S3 object
+        const s3 = new AWS.S3();
+
+        // Function to check for new files
+        function checkForNewFiles() {
+            const bucketName = 'surfly-test-service';
+            const prefix = '/surfly.online/support@surfly.com/';
+            
+            const params = {
+                Bucket: bucketName,
+                Prefix: prefix,
+            };
+
+            s3.listObjects(params, (err, data) => {
+                if (err) {
+                    console.error('Error:', err);
+                    return;
+                }
+
+                // List of objects (files) in the S3 bucket
+                const objects = data.Contents.map(obj => obj.Key);
+
+                // Check if there are any new files
+                if (objects.length > 0) {
+                    console.log('Found ' + objects.length + ' files:');
+                    console.log(objects);
+                } else {
+                    console.log('No new files found.');
+                }
+            });
+        }
+
+        // Call the function when the page loads
+        window.onload = checkForNewFiles;
+    </script>
+</body>
+</html>
